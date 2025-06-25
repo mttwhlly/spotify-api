@@ -1,5 +1,5 @@
 // Vercel API Route: api/spotify.js
-export default function handler(req, res) {
+export default async function handler(req, res) {
   // Enable CORS for your domain
   res.setHeader('Access-Control-Allow-Origin', 'https://mattwhalley.com');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -7,8 +7,7 @@ export default function handler(req, res) {
 
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
+    return res.status(200).end();
   }
 
   // POST method for getting access token
@@ -29,11 +28,7 @@ export default function handler(req, res) {
 
       // Validate credentials
       if (!CLIENT_ID || !CLIENT_SECRET || !REFRESH_TOKEN) {
-        console.error('Missing credentials:', {
-          hasClientId: !!CLIENT_ID,
-          hasClientSecret: !!CLIENT_SECRET,
-          hasRefreshToken: !!REFRESH_TOKEN,
-        });
+        console.error('Missing credentials');
         
         return res.status(500).json({
           error: 'Missing credentials',
@@ -42,8 +37,8 @@ export default function handler(req, res) {
       }
 
       // Create authorization header
-      const authHeader = 'Basic ' + Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64');
-      console.log('Authorization header created');
+      const credentials = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64');
+      const authHeader = `Basic ${credentials}`;
 
       // Create body parameters
       const bodyParams = new URLSearchParams({
@@ -60,14 +55,14 @@ export default function handler(req, res) {
           'Content-Type': 'application/x-www-form-urlencoded',
           Authorization: authHeader,
         },
-        body: bodyParams,
+        body: bodyParams.toString(),
       });
 
       console.log('Spotify token response status:', response.status);
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('Spotify token request failed:', response.status, response.statusText);
+        console.error('Spotify token request failed:', response.status);
         console.error('Error details:', errorText);
 
         return res.status(500).json({

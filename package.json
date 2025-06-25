@@ -2,20 +2,7 @@
   "name": "spotify-api",
   "version": "1.0.0",
   "type": "module",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mttwhlly/spotify-api.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/mttwhlly/spotify-api/issues"
-  },
-  "homepage": "https://github.com/mttwhlly/spotify-api#readme",
-  "description": ""
+  "engines": {
+    "node": ">=18"
+  }
 }
