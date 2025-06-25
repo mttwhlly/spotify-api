@@ -1,5 +1,5 @@
 // Vercel API Route: api/spotify.js
-export default async function handler(req, res) {
+export default function handler(req, res) {
   // Enable CORS for your domain
   res.setHeader('Access-Control-Allow-Origin', 'https://mattwhalley.com');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
