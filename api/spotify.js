@@ -1,9 +1,25 @@
-// Vercel API Route: api/spotify.js
-export default async function handler(req, res) {
-  // Enable CORS for your domain
-  res.setHeader('Access-Control-Allow-Origin', 'https://mattwhalley.com');
+// CommonJS version with multi-domain CORS - api/spotify.js
+module.exports = async function handler(req, res) {
+  // Get the origin of the request
+  const origin = req.headers.origin;
+  
+  // List of allowed origins
+  const allowedOrigins = [
+    'https://mattwhalley.com',
+    'https://www.mattwhalley.com',
+    'https://mttwhlly.github.io',
+    'http://localhost:4321', // For local development
+    'http://127.0.0.1:4321'  // Alternative local
+  ];
+
+  // Set CORS headers
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
 
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
@@ -13,7 +29,7 @@ export default async function handler(req, res) {
   // POST method for getting access token
   if (req.method === 'POST') {
     try {
-      console.log('Spotify API endpoint hit');
+      console.log('Spotify API endpoint hit from:', origin);
 
       // Get environment variables
       const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
@@ -63,7 +79,6 @@ export default async function handler(req, res) {
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Spotify token request failed:', response.status);
-        console.error('Error details:', errorText);
 
         return res.status(500).json({
           error: 'Token request failed',
@@ -93,6 +108,8 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     return res.status(200).json({
       message: 'Spotify API endpoint is working. Please use POST method for authentication.',
+      allowed_origins: allowedOrigins,
+      request_origin: origin,
       env_check: {
         has_client_id: !!process.env.SPOTIFY_CLIENT_ID,
         has_client_secret: !!process.env.SPOTIFY_CLIENT_SECRET,
@@ -107,4 +124,4 @@ export default async function handler(req, res) {
     error: 'Method not allowed',
     message: 'Only GET and POST methods are supported',
   });
-}
+};
