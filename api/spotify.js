@@ -1,5 +1,5 @@
-// CommonJS version with multi-domain CORS - api/spotify.js
-module.exports = async function handler(req, res) {
+// ES Module version with multi-domain CORS - api/spotify.js
+export default async function handler(req, res) {
   // Get the origin of the request
   const origin = req.headers.origin;
   
@@ -124,4 +124,4 @@ module.exports = async function handler(req, res) {
     error: 'Method not allowed',
     message: 'Only GET and POST methods are supported',
   });
-};
+}
